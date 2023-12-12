@@ -25,13 +25,15 @@ integrationDefaults: &integrationDefaults
     - KIND_VERSION: v0.9.0
     - KUBECONFIG: /home/circleci/.kube/kind-config-kind
 
-setupKubernetes: &setupKubernetes
-  - run:
+setupKubernetes:
+  - &id001
+    run:
       name: Setup Kubernetes
       command: ~/go/src/${CIRCLE_PROJECT_USERNAME}/ci/build/kubernetes/k8s_setup.sh
 
-buildCoreDNSImage: &buildCoreDNSImage
-  - run:
+buildCoreDNSImage:
+  - &id002
+    run:
       name: Build latest CoreDNS Docker image
       command: |
         cd ~/go/src/${CIRCLE_PROJECT_USERNAME}/coredns
@@ -47,11 +49,11 @@ jobs:
       - checkout
       - run:
           name: Get CI repo
-          command : |
+          command: |
             mkdir -p ~/go/src/${CIRCLE_PROJECT_USERNAME}/ci
             git clone https://github.com/${CIRCLE_PROJECT_USERNAME}/ci ~/go/src/${CIRCLE_PROJECT_USERNAME}/ci
-      - <<: *setupKubernetes
-      - <<: *buildCoreDNSImage
+      - <<: *id001
+      - <<: *id002
       - run:
           name: Run Kubernetes tests
           command: |
